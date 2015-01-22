@@ -16,8 +16,6 @@
 
 package com.android.deskclock.provider;
 
-import android.app.ProfileManager;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -30,7 +28,6 @@ import android.text.TextUtils;
 import com.android.deskclock.LogUtils;
 
 import java.util.Calendar;
-import java.util.UUID;
 
 /**
  * Helper class for opening the database from multiple providers.  Also provides
@@ -60,18 +57,11 @@ class ClockDatabaseHelper extends SQLiteOpenHelper {
      */
     private static final int VERSION_8 = 10;
 
-    /**
-     * Added change profile
-     */
-    private static final int VERSION_9 = 11;
-
     // This creates a default alarm at 8:30 for every Mon,Tue,Wed,Thu,Fri
-    private static final String DEFAULT_ALARM_1 = "(8, 30, 31, 0, 0, '', NULL, 0, 0, '" +
-            ProfileManager.NO_PROFILE.toString() + "');";
+    private static final String DEFAULT_ALARM_1 = "(8, 30, 31, 0, 0, '', NULL, 0, 0);";
 
     // This creates a default alarm at 9:30 for every Sat,Sun
-    private static final String DEFAULT_ALARM_2 = "(9, 00, 96, 0, 0, '', NULL, 0, 0, '" +
-            ProfileManager.NO_PROFILE.toString() + "');";
+    private static final String DEFAULT_ALARM_2 = "(9, 00, 96, 0, 0, '', NULL, 0, 0);";
 
     // Database and table names
     static final String DATABASE_NAME = "alarms.db";
@@ -91,9 +81,7 @@ class ClockDatabaseHelper extends SQLiteOpenHelper {
                 ClockContract.AlarmsColumns.LABEL + " TEXT NOT NULL, " +
                 ClockContract.AlarmsColumns.RINGTONE + " TEXT, " +
                 ClockContract.AlarmsColumns.DELETE_AFTER_USE + " INTEGER NOT NULL DEFAULT 0, " +
-                ClockContract.AlarmsColumns.INCREASING_VOLUME + " INTEGER NOT NULL DEFAULT 0, " +
-                ClockContract.AlarmsColumns.PROFILE + " TEXT NOT NULL DEFAULT '" +
-                    ProfileManager.NO_PROFILE.toString() + "');");
+                ClockContract.AlarmsColumns.INCREASING_VOLUME + " INTEGER NOT NULL DEFAULT 0);");
         LogUtils.i("Alarms Table created");
     }
 
@@ -112,9 +100,7 @@ class ClockDatabaseHelper extends SQLiteOpenHelper {
                 ClockContract.InstancesColumns.ALARM_ID + " INTEGER REFERENCES " +
                     ALARMS_TABLE_NAME + "(" + ClockContract.AlarmsColumns._ID + ") " +
                     "ON UPDATE CASCADE ON DELETE CASCADE, " +
-                ClockContract.InstancesColumns.INCREASING_VOLUME + " INTEGER NOT NULL DEFAULT 0, " +
-                ClockContract.InstancesColumns.PROFILE + " TEXT NOT NULL DEFAULT '" +
-                    ProfileManager.NO_PROFILE.toString() + "');");
+                ClockContract.InstancesColumns.INCREASING_VOLUME + " INTEGER NOT NULL DEFAULT 0);");
         LogUtils.i("Instance table created");
     }
 
@@ -130,7 +116,7 @@ class ClockDatabaseHelper extends SQLiteOpenHelper {
     private Context mContext;
 
     public ClockDatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, VERSION_9);
+        super(context, DATABASE_NAME, null, VERSION_8);
         mContext = context;
     }
 
@@ -152,8 +138,7 @@ class ClockDatabaseHelper extends SQLiteOpenHelper {
                 ClockContract.AlarmsColumns.LABEL + cs +
                 ClockContract.AlarmsColumns.RINGTONE + cs +
                 ClockContract.AlarmsColumns.DELETE_AFTER_USE + cs +
-                ClockContract.AlarmsColumns.INCREASING_VOLUME + cs +
-                ClockContract.AlarmsColumns.PROFILE + ") VALUES ";
+                ClockContract.AlarmsColumns.INCREASING_VOLUME + ") VALUES ";
         db.execSQL(insertMe + DEFAULT_ALARM_1);
         db.execSQL(insertMe + DEFAULT_ALARM_2);
     }
@@ -183,8 +168,7 @@ class ClockDatabaseHelper extends SQLiteOpenHelper {
                     "vibrate",
                     "message",
                     "alert",
-                    "incvol",
-                    "profile"
+                    "incvol"
             };
             Cursor cursor = db.query(OLD_ALARMS_TABLE_NAME, OLD_TABLE_COLUMNS,
                     null, null, null, null, null);
@@ -198,24 +182,13 @@ class ClockDatabaseHelper extends SQLiteOpenHelper {
                 alarm.enabled = cursor.getInt(4) == 1;
                 alarm.vibrate = cursor.getInt(5) == 1;
                 alarm.label = cursor.getString(6);
+                alarm.increasingVolume = cursor.getInt(8) == 1;
 
                 String alertString = cursor.getString(7);
                 if ("silent".equals(alertString)) {
                     alarm.alert = Alarm.NO_RINGTONE_URI;
                 } else {
                     alarm.alert = TextUtils.isEmpty(alertString) ? null : Uri.parse(alertString);
-                }
-
-                alarm.increasingVolume = cursor.getInt(8) == 1;
-
-                if (cursor.isNull(9)) {
-                    alarm.profile = ProfileManager.NO_PROFILE;
-                } else {
-                    try {
-                        alarm.profile = UUID.fromString(cursor.getString(9));
-                    } catch (IllegalArgumentException ex) {
-                        alarm.profile = ProfileManager.NO_PROFILE;
-                    }
                 }
 
                 // Save new version of alarm and create alarminstance for it
@@ -230,26 +203,13 @@ class ClockDatabaseHelper extends SQLiteOpenHelper {
 
             LogUtils.i("Dropping old alarm table");
             db.execSQL("DROP TABLE IF EXISTS " + OLD_ALARMS_TABLE_NAME + ";");
-        } else {
-            // Update the database tables according the old version
-
-            if (oldVersion < VERSION_8) {
-                db.execSQL("ALTER TABLE " + ALARMS_TABLE_NAME
-                        + " ADD COLUMN " + ClockContract.AlarmsColumns.INCREASING_VOLUME
-                        + " INTEGER NOT NULL DEFAULT 0;");
-                db.execSQL("ALTER TABLE " + INSTANCES_TABLE_NAME
-                        + " ADD COLUMN " + ClockContract.InstancesColumns.INCREASING_VOLUME
-                        + " INTEGER NOT NULL DEFAULT 0;");
-            }
-
-            if (oldVersion < VERSION_9) {
-                db.execSQL("ALTER TABLE " + ALARMS_TABLE_NAME
-                        + " ADD COLUMN " + ClockContract.AlarmsColumns.PROFILE
-                        + " TEXT NOT NULL DEFAULT '" + ProfileManager.NO_PROFILE + "';");
-                db.execSQL("ALTER TABLE " + INSTANCES_TABLE_NAME
-                        + " ADD COLUMN " + ClockContract.InstancesColumns.PROFILE
-                        + " TEXT NOT NULL DEFAULT '" + ProfileManager.NO_PROFILE + "';");
-            }
+        } else if (oldVersion < VERSION_8) {
+            db.execSQL("ALTER TABLE " + ALARMS_TABLE_NAME
+                    + " ADD COLUMN " + ClockContract.AlarmsColumns.INCREASING_VOLUME
+                    + " INTEGER NOT NULL DEFAULT 0;");
+            db.execSQL("ALTER TABLE " + INSTANCES_TABLE_NAME
+                    + " ADD COLUMN " + ClockContract.InstancesColumns.INCREASING_VOLUME
+                    + " INTEGER NOT NULL DEFAULT 0;");
         }
     }
 
