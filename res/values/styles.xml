@@ -27,6 +27,7 @@
         <item name="android:colorControlNormal">@color/white</item>
         <item name="android:popupMenuStyle">?android:attr/actionOverflowMenuStyle</item>
         <item name="android:buttonStyle">?android:attr/borderlessButtonStyle</item>
+        <item name="android:navigationBarColor">@color/status_bar</item>
     </style>
 
     <style name="AlarmSwitchTheme">
