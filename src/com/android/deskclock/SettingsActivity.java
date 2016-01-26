@@ -165,7 +165,7 @@ public class SettingsActivity extends BaseActivity {
                 weekStartPref.setSummary(weekStartPref.getEntries()[idx]);
             } else if (KEY_FULLSCREEN_ALARM.equals(pref.getKey())) {
                 boolean state =(Boolean) newValue;
-                Settings.System.putInt(this.getContentResolver(),
+                Settings.System.putInt(getActivity().getContentResolver(),
 	                Settings.System.SHOW_ALARM_FULLSCREEN, state ? 1 : 0);
             }
             // Set result so DeskClock knows to refresh itself
@@ -248,7 +248,7 @@ public class SettingsActivity extends BaseActivity {
             volumeButtonsPref.setOnPreferenceChangeListener(this);
 
             CheckBoxPreference fullscreenAlarm = (CheckBoxPreference) findPreference(KEY_FULLSCREEN_ALARM);
-            fullscreenAlarm.setChecked(Settings.System.getInt(this.getContentResolver(),
+            fullscreenAlarm.setChecked(Settings.System.getInt(getActivity().getContentResolver(),
 	            Settings.System.SHOW_ALARM_FULLSCREEN, 0) == 1);
             fullscreenAlarm.setOnPreferenceChangeListener(this);
 
