@@ -88,11 +88,11 @@
             android:entryValues="@array/volume_button_setting_values"
             android:defaultValue="0" />
 
-        <SwitchPreference
-            android:key="show_status_bar_icon"
-            android:title="@string/show_status_bar_icon_title"
-            android:summary="@string/show_status_bar_icon_summary"
-            android:persistent="false"
-            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="fullscreen_alarm"
+            android:summary="@string/fullscreen_alarm_summary"
+            android:title="@string/fullscreen_alarm_title" />
+
     </PreferenceCategory>
 </PreferenceScreen>

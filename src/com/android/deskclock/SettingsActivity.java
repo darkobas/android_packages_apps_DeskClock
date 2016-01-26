@@ -20,17 +20,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.ContentResolver;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
+import android.preference.SwitchPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.provider.Settings;
 
 import com.android.deskclock.worldclock.Cities;
 
@@ -60,6 +64,9 @@ public class SettingsActivity extends BaseActivity {
     public static final String DEFAULT_VOLUME_BEHAVIOR = "0";
     public static final String VOLUME_BEHAVIOR_SNOOZE = "1";
     public static final String VOLUME_BEHAVIOR_DISMISS = "2";
+
+    public static final String KEY_FULLSCREEN_ALARM =
+            "fullscreen_alarm";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +163,10 @@ public class SettingsActivity extends BaseActivity {
                 final ListPreference weekStartPref = (ListPreference) findPreference(KEY_WEEK_START);
                 final int idx = weekStartPref.findIndexOfValue((String) newValue);
                 weekStartPref.setSummary(weekStartPref.getEntries()[idx]);
+            } else if (KEY_FULLSCREEN_ALARM.equals(pref.getKey())) {
+                boolean state =(Boolean) newValue;
+                Settings.System.putInt(this.getContentResolver(),
+	                Settings.System.SHOW_ALARM_FULLSCREEN, state ? 1 : 0);
             }
             // Set result so DeskClock knows to refresh itself
             getActivity().setResult(RESULT_OK);
@@ -235,6 +246,11 @@ public class SettingsActivity extends BaseActivity {
             final ListPreference volumeButtonsPref = (ListPreference) findPreference(KEY_VOLUME_BUTTONS);
             updateActionSummary(volumeButtonsPref, volumeButtonsPref.getValue(), R.string.volume_buttons_summary);
             volumeButtonsPref.setOnPreferenceChangeListener(this);
+
+            CheckBoxPreference fullscreenAlarm = (CheckBoxPreference) findPreference(KEY_FULLSCREEN_ALARM);
+            fullscreenAlarm.setChecked(Settings.System.getInt(this.getContentResolver(),
+	            Settings.System.SHOW_ALARM_FULLSCREEN, 0) == 1);
+            fullscreenAlarm.setOnPreferenceChangeListener(this);
 
             SensorManager sensorManager = (SensorManager)
                     getActivity().getSystemService(Context.SENSOR_SERVICE);

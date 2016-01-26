@@ -43,4 +43,8 @@
 
     <!-- Setting labels on Set alarm screen: Increasing volume on or off -->
     <string name="alarm_increasing_volume">Increasing volume</string>
+
+    <string name="fullscreen_alarm_settings">Full screen alarms</string>
+    <string name="fullscreen_alarm_title">Full screen alarms</string>
+    <string name="fullscreen_alarm_summary">Use full screen alarms instead of heads up notification</string>
 </resources>
