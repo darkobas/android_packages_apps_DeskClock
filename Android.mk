@@ -14,7 +14,7 @@ endif
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_PACKAGE_NAME := DeskClock
+LOCAL_PACKAGE_NAME := DeskClock2
 
 LOCAL_CERTIFICATE := platform
 
