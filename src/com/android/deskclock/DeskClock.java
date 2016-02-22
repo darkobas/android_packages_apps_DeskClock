@@ -225,6 +225,8 @@ public class DeskClock extends BaseActivity
             }
         }
         initViews();
+        Log.d(LOG_TAG, "mSelectedTab=" + mSelectedTab);
+        mViewPager.setCurrentItem(mSelectedTab);
         setHomeTimeZone();
 
         // We need to update the system next alarm time on app startup because the
