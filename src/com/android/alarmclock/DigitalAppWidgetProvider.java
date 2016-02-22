@@ -93,7 +93,7 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
                                     R.id.digital_appwidget_listview);
                     RemoteViews widget = new RemoteViews(context.getPackageName(),
                             R.layout.digital_appwidget);
-                    float ratio = WidgetUtils.getScaleRatio(context, null, appWidgetId);
+                    float ratio = WidgetUtils.getScaleRatio(context, null, appWidgetId, true);
                     WidgetUtils.setTimeFormat(context, widget, 0/*no am/pm*/, R.id.the_clock);
                     WidgetUtils.setClockSize(context, widget, ratio);
                     refreshAlarm(context, widget);
@@ -136,7 +136,7 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
             Log.i(TAG, "onUpdate");
         }
         for (int appWidgetId : appWidgetIds) {
-            float ratio = WidgetUtils.getScaleRatio(context, null, appWidgetId);
+            float ratio = WidgetUtils.getScaleRatio(context, null, appWidgetId, true);
             updateClock(context, appWidgetManager, appWidgetId, ratio);
         }
         startAlarmOnQuarterHour(context);
@@ -147,7 +147,7 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
             int appWidgetId, Bundle newOptions) {
         // scale the fonts of the clock to fit inside the new size
-        float ratio = WidgetUtils.getScaleRatio(context, newOptions, appWidgetId);
+        float ratio = WidgetUtils.getScaleRatio(context, newOptions, appWidgetId, true);
         AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
         updateClock(context, widgetManager, appWidgetId, ratio);
     }

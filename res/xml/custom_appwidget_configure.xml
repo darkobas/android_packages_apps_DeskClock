@@ -13,12 +13,12 @@
      limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/settings" >
+    android:title="@string/custom_gadget" >
 
-        <CheckBoxPreference
+<!--       <CheckBoxPreference
             android:defaultValue="true"
             android:key="show_world_clock"
-            android:title="@string/show_world_clock_title" />
+            android:title="@string/show_world_clock_title" /> -->
 
         <CheckBoxPreference
             android:defaultValue="true"
@@ -45,6 +45,6 @@
 
         <Preference
             android:widgetLayout="@layout/preference_button"
-            android:persistent="false" /> 
+            android:persistent="false" />
 
 </PreferenceScreen>

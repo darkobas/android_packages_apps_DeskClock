@@ -50,7 +50,7 @@ import com.android.deskclock.preference.ColorPickerPreference;
 public class CustomAppWidgetConfigure extends PreferenceActivity implements
         Preference.OnPreferenceChangeListener {
 
-    public static final String KEY_SHOW_WORLD_CLOCK = "show_world_clock";
+    //public static final String KEY_SHOW_WORLD_CLOCK = "show_world_clock";
     public static final String KEY_SHOW_ALARM = "show_alarm";
     public static final String KEY_SHOW_DATE = "show_date";
     public static final String KEY_CLOCK_FONT = "clock_font";
@@ -81,7 +81,7 @@ public class CustomAppWidgetConfigure extends PreferenceActivity implements
         }
 
         addPreferencesFromResource(R.xml.custom_appwidget_configure);
-        initPreference(KEY_SHOW_WORLD_CLOCK);
+        //initPreference(KEY_SHOW_WORLD_CLOCK);
         initPreference(KEY_SHOW_ALARM);
         initPreference(KEY_SHOW_DATE);
         initPreference(KEY_CLOCK_SHADOW);
@@ -118,7 +118,7 @@ public class CustomAppWidgetConfigure extends PreferenceActivity implements
 
     public static void clearPrefs(Context context, int id) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        prefs.edit().remove(KEY_SHOW_WORLD_CLOCK + "_" + id).commit();
+        //prefs.edit().remove(KEY_SHOW_WORLD_CLOCK + "_" + id).commit();
         prefs.edit().remove(KEY_SHOW_ALARM + "_" + id).commit();
         prefs.edit().remove(KEY_SHOW_DATE + "_" + id).commit();
         prefs.edit().remove(KEY_CLOCK_FONT + "_" + id).commit();

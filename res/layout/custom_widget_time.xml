@@ -35,14 +35,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
-        <TextClock android:id="@+id/date"
+        <ImageView
+            android:id="@+id/the_date_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:format12Hour=""
-            android:format24Hour=""
-            style="@style/widget_label"
             android:gravity="center"
-            />
+        />
         <TextView android:id="@+id/nextAlarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,7 +48,7 @@
             android:drawableLeft="@drawable/ic_alarm_small"
             android:drawableStart="@drawable/ic_alarm_small"
             android:textColor="@color/clock_gray"
-            style="@style/widget_label"
+            style="@style/custom_widget_label"
             android:layout_marginLeft="8dip"
             android:layout_marginStart="8dip"
             android:gravity="center"
